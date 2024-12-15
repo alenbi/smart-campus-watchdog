@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusCircle, Pencil, History, Trash2, Mail } from "lucide-react";
+import { Pencil, History, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AddStudentDialog } from "@/components/students/AddStudentDialog";
+import { StudentMailLogs } from "@/components/students/StudentMailLogs";
 
 // Demo data
 const demoStudents = [
@@ -88,81 +89,16 @@ const demoMailLogs = [
 
 const Students = () => {
   const [students, setStudents] = useState(demoStudents);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [showMailLogs, setShowMailLogs] = useState(false);
-  const { toast } = useToast();
 
-  const handleAddStudent = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const newStudent = {
-      id: `STU${String(students.length + 1).padStart(3, '0')}`,
-      name: formData.get('name') as string,
-      rollNo: formData.get('rollNo') as string,
-      department: formData.get('department') as string,
-      year: formData.get('year') as string,
-      section: formData.get('section') as string,
-      violations: 0,
-      photo: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952",
-      email: formData.get('email') as string
-    };
+  const handleAddStudent = (newStudent: any) => {
     setStudents([...students, newStudent]);
-    toast({
-      title: "Success",
-      description: "Student added successfully",
-    });
-  };
-
-  const getStudentMailLogs = (studentId: string) => {
-    return demoMailLogs.filter(log => log.studentId === studentId);
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Students Management</h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
-              <PlusCircle className="h-4 w-4" />
-              Add Student
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add New Student</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleAddStudent} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" name="name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rollNo">Roll Number</Label>
-                  <Input id="rollNo" name="rollNo" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="department">Department</Label>
-                  <Input id="department" name="department" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="year">Year</Label>
-                  <Input id="year" name="year" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="section">Section</Label>
-                  <Input id="section" name="section" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" required />
-                </div>
-              </div>
-              <Button type="submit" className="w-full">Add Student</Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <AddStudentDialog onAddStudent={handleAddStudent} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -172,7 +108,9 @@ const Students = () => {
         </Card>
         <Card className="p-4">
           <h3 className="font-semibold text-lg mb-2">Active Violations</h3>
-          <p className="text-3xl font-bold">{students.reduce((acc, student) => acc + student.violations, 0)}</p>
+          <p className="text-3xl font-bold">
+            {students.reduce((acc, student) => acc + student.violations, 0)}
+          </p>
         </Card>
         <Card className="p-4">
           <h3 className="font-semibold text-lg mb-2">Compliance Rate</h3>
@@ -257,31 +195,7 @@ const Students = () => {
                         </div>
                       </DialogContent>
                     </Dialog>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <Mail className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Mail Logs - {student.name}</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          {getStudentMailLogs(student.id).map((log) => (
-                            <div key={log.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                              <div>
-                                <p className="font-medium">{log.subject}</p>
-                                <p className="text-sm text-gray-500">{log.date}</p>
-                              </div>
-                              <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                                {log.status}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <StudentMailLogs studentId={student.id} logs={demoMailLogs} />
                     <Button variant="ghost" size="icon" className="text-destructive">
                       <Trash2 className="h-4 w-4" />
                     </Button>

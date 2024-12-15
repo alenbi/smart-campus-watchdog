@@ -7,6 +7,9 @@ import { Layout } from "./components/Layout";
 import Index from "./pages/Index";
 import Students from "./pages/Students";
 import Security from "./pages/Security";
+import Violations from "./pages/Violations";
+import Notifications from "./pages/Notifications";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +24,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/students" element={<Students />} />
             <Route path="/security" element={<Security />} />
+            <Route path="/violations" element={<Violations />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </Layout>
       </BrowserRouter>
