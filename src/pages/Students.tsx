@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusCircle, Pencil, History, Trash2 } from "lucide-react";
+import { PlusCircle, Pencil, History, Trash2, Mail } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Demo data
 const demoStudents = [
@@ -31,6 +32,8 @@ const demoStudents = [
     year: "3rd Year",
     section: "A",
     violations: 2,
+    photo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    email: "john.smith@example.com"
   },
   {
     id: "STU002",
@@ -40,6 +43,8 @@ const demoStudents = [
     year: "3rd Year",
     section: "B",
     violations: 0,
+    photo: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    email: "emma.wilson@example.com"
   },
   {
     id: "STU003",
@@ -49,11 +54,42 @@ const demoStudents = [
     year: "3rd Year",
     section: "A",
     violations: 1,
+    photo: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
+    email: "michael.brown@example.com"
   },
+];
+
+const demoMailLogs = [
+  {
+    id: 1,
+    studentId: "STU001",
+    date: "2024-02-20",
+    subject: "Uniform Violation Notice",
+    type: "ID Card Missing",
+    status: "Sent"
+  },
+  {
+    id: 2,
+    studentId: "STU001",
+    date: "2024-02-19",
+    subject: "Dress Code Violation",
+    type: "Untucked Shirt",
+    status: "Sent"
+  },
+  {
+    id: 3,
+    studentId: "STU003",
+    date: "2024-02-18",
+    subject: "Uniform Violation Notice",
+    type: "ID Card Missing",
+    status: "Sent"
+  }
 ];
 
 const Students = () => {
   const [students, setStudents] = useState(demoStudents);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [showMailLogs, setShowMailLogs] = useState(false);
   const { toast } = useToast();
 
   const handleAddStudent = (e: React.FormEvent<HTMLFormElement>) => {
@@ -67,12 +103,18 @@ const Students = () => {
       year: formData.get('year') as string,
       section: formData.get('section') as string,
       violations: 0,
+      photo: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952",
+      email: formData.get('email') as string
     };
     setStudents([...students, newStudent]);
     toast({
       title: "Success",
       description: "Student added successfully",
     });
+  };
+
+  const getStudentMailLogs = (studentId: string) => {
+    return demoMailLogs.filter(log => log.studentId === studentId);
   };
 
   return (
@@ -86,7 +128,7 @@ const Students = () => {
               Add Student
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add New Student</DialogTitle>
             </DialogHeader>
@@ -112,6 +154,10 @@ const Students = () => {
                   <Label htmlFor="section">Section</Label>
                   <Input id="section" name="section" required />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" name="email" type="email" required />
+                </div>
               </div>
               <Button type="submit" className="w-full">Add Student</Button>
             </form>
@@ -136,10 +182,11 @@ const Students = () => {
         </Card>
       </div>
 
-      <Card>
+      <Card className="overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Photo</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Roll No</TableHead>
@@ -153,6 +200,12 @@ const Students = () => {
           <TableBody>
             {students.map((student) => (
               <TableRow key={student.id}>
+                <TableCell>
+                  <Avatar>
+                    <AvatarImage src={student.photo} alt={student.name} />
+                    <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </TableCell>
                 <TableCell>{student.id}</TableCell>
                 <TableCell>{student.name}</TableCell>
                 <TableCell>{student.rollNo}</TableCell>
@@ -162,12 +215,73 @@ const Students = () => {
                 <TableCell>{student.violations}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <History className="h-4 w-4" />
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[625px]">
+                        <DialogHeader>
+                          <DialogTitle>Student Details</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="flex flex-col items-center gap-4">
+                            <Avatar className="w-32 h-32">
+                              <AvatarImage src={student.photo} alt={student.name} />
+                              <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="text-center">
+                              <h3 className="font-semibold text-lg">{student.name}</h3>
+                              <p className="text-sm text-gray-500">{student.email}</p>
+                            </div>
+                          </div>
+                          <div className="space-y-4">
+                            <div>
+                              <Label>Roll Number</Label>
+                              <Input defaultValue={student.rollNo} />
+                            </div>
+                            <div>
+                              <Label>Department</Label>
+                              <Input defaultValue={student.department} />
+                            </div>
+                            <div>
+                              <Label>Year</Label>
+                              <Input defaultValue={student.year} />
+                            </div>
+                            <div>
+                              <Label>Section</Label>
+                              <Input defaultValue={student.section} />
+                            </div>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Mail Logs - {student.name}</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          {getStudentMailLogs(student.id).map((log) => (
+                            <div key={log.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                              <div>
+                                <p className="font-medium">{log.subject}</p>
+                                <p className="text-sm text-gray-500">{log.date}</p>
+                              </div>
+                              <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                {log.status}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                     <Button variant="ghost" size="icon" className="text-destructive">
                       <Trash2 className="h-4 w-4" />
                     </Button>
