@@ -1,7 +1,36 @@
 import { Camera, AlertTriangle, UserCheck, Bell } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [backendStatus, setBackendStatus] = useState<string>("");
+
+  useEffect(() => {
+    // Test backend connection
+    const testBackend = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/test");
+        const data = await response.json();
+        setBackendStatus(data.message);
+        toast({
+          title: "Backend Connection",
+          description: "Successfully connected to Python backend!",
+        });
+      } catch (error) {
+        console.error("Backend connection error:", error);
+        toast({
+          title: "Connection Error",
+          description: "Failed to connect to backend. Make sure it's running!",
+          variant: "destructive",
+        });
+      }
+    };
+
+    testBackend();
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -12,6 +41,12 @@ const Index = () => {
           </button>
         </div>
       </div>
+
+      {backendStatus && (
+        <Card className="p-4 bg-green-50">
+          <p className="text-green-600">Backend Status: {backendStatus}</p>
+        </Card>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
