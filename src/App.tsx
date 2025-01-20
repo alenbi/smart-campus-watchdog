@@ -10,6 +10,7 @@ import Security from "./pages/Security";
 import Violations from "./pages/Violations";
 import Notifications from "./pages/Notifications";
 import Settings from "./pages/Settings";
+import RouteMap from "./pages/RouteMap";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/violations" element={<Violations />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/route-map" element={<RouteMap />} />
           </Routes>
         </Layout>
       </BrowserRouter>

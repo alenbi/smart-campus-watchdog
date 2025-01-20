@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Pencil, History, Trash2 } from "lucide-react";
+import { Pencil, History, Trash2, MapPin } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddStudentDialog } from "@/components/students/AddStudentDialog";
@@ -198,6 +198,13 @@ const Students = () => {
                     <StudentMailLogs studentId={student.id} logs={demoMailLogs} />
                     <Button variant="ghost" size="icon" className="text-destructive">
                       <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => window.location.href = `/route-map?id=${student.id}`}
+                    >
+                      <MapPin className="h-4 w-4" />
                     </Button>
                   </div>
                 </TableCell>
