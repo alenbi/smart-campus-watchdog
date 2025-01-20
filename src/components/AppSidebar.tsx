@@ -1,4 +1,4 @@
-import { Camera, Users, Bell, Shield, Settings, AlertTriangle } from "lucide-react";
+import { Camera, Users, Bell, Shield, Settings, AlertTriangle, Map } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -17,6 +17,7 @@ const menuItems = [
   { title: "Violations", icon: AlertTriangle, url: "/violations" },
   { title: "Security", icon: Shield, url: "/security" },
   { title: "Notifications", icon: Bell, url: "/notifications" },
+  { title: "Route Map", icon: Map, url: "/route-map" },
   { title: "Settings", icon: Settings, url: "/settings" },
 ];
 
