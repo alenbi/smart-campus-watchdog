@@ -1,55 +1,47 @@
-import { Camera, Users, Bell, Shield, Settings, AlertTriangle, Map } from "lucide-react";
+import { Camera, Users, Bell, Shield, Settings, AlertTriangle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+  SidebarHeader,
+  SidebarNav,
+  SidebarNavLink,
+  SidebarNavLinks,
+} from "./ui/sidebar";
 
-const menuItems = [
-  { title: "Monitoring", icon: Camera, url: "/" },
+const navigation = [
   { title: "Students", icon: Users, url: "/students" },
   { title: "Violations", icon: AlertTriangle, url: "/violations" },
   { title: "Security", icon: Shield, url: "/security" },
   { title: "Notifications", icon: Bell, url: "/notifications" },
-  { title: "Route Map", icon: Map, url: "/route-map" },
   { title: "Settings", icon: Settings, url: "/settings" },
 ];
 
-export function AppSidebar() {
+const AppSidebar = () => {
   const location = useLocation();
 
   return (
     <Sidebar>
+      <SidebarHeader>
+        <h1 className="text-lg font-bold">App Name</h1>
+      </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Uniform Compliance System</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      to={item.url}
-                      className={`flex items-center gap-3 ${
-                        location.pathname === item.url ? "text-primary" : ""
-                      }`}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarNav>
+          {navigation.map((item) => (
+            <SidebarNavLink
+              key={item.title}
+              as={Link}
+              to={item.url}
+              className={location.pathname === item.url ? "active" : ""}
+            >
+              <item.icon className="mr-2" />
+              {item.title}
+            </SidebarNavLink>
+          ))}
+        </SidebarNav>
       </SidebarContent>
     </Sidebar>
   );
-}
+};
+
+export default AppSidebar;
