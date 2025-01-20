@@ -4,9 +4,9 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarNav,
-  SidebarNavLink,
-  SidebarNavLinks,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "./ui/sidebar";
 
 const navigation = [
@@ -26,19 +26,22 @@ const AppSidebar = () => {
         <h1 className="text-lg font-bold">App Name</h1>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarNav>
+        <SidebarMenu>
           {navigation.map((item) => (
-            <SidebarNavLink
-              key={item.title}
-              as={Link}
-              to={item.url}
-              className={location.pathname === item.url ? "active" : ""}
-            >
-              <item.icon className="mr-2" />
-              {item.title}
-            </SidebarNavLink>
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={location.pathname === item.url}
+              >
+                <Link to={item.url}>
+                  <item.icon className="mr-2" />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           ))}
-        </SidebarNav>
+        </SidebarMenu>
       </SidebarContent>
     </Sidebar>
   );
