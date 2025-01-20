@@ -7,8 +7,19 @@ import { MapPin } from "lucide-react";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+// Define proper type for route location
+type RouteLocation = {
+  time: string;
+  location: string;
+  coordinates: [number, number]; // This is now properly typed as a tuple
+};
+
+type StudentRoutes = {
+  [key: string]: RouteLocation[];
+};
+
 // Demo data for student routes
-const demoRoutes = {
+const demoRoutes: StudentRoutes = {
   "STU001": [
     { time: "08:30 AM", location: "Main Gate", coordinates: [77.5946, 12.9716] },
     { time: "08:45 AM", location: "Library", coordinates: [77.5948, 12.9718] },
@@ -27,7 +38,7 @@ const RouteMap = () => {
   const location = useLocation();
   const [mapboxToken, setMapboxToken] = useState("");
   const studentId = new URLSearchParams(location.search).get("id") || "STU001";
-  const studentRoutes = demoRoutes[studentId as keyof typeof demoRoutes] || [];
+  const studentRoutes = demoRoutes[studentId] || [];
 
   const initializeMap = () => {
     if (!mapboxToken) return;
@@ -36,7 +47,7 @@ const RouteMap = () => {
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: studentRoutes[0]?.coordinates || [77.5946, 12.9716],
+      center: studentRoutes[0]?.coordinates,
       zoom: 16
     });
 
